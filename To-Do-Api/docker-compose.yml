@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=development
+      - PORT=5001
+      - MONGO_URI=mongodb://mongo:27017/todo
+      - JWT_SECRET=your_jwt_secret
+      - JWT_REFRESH_SECRET=your_refresh_secret
+    depends_on:
+      - mongo
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+    networks:
+      - todo_network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - todo_network
+
+volumes:
+  mongodb_data: 
+
+networks:
+  todo_network:
+    driver: bridge 
